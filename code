@@ -1,0 +1,40 @@
+import numpy as np
+import math
+
+##### generate lpsolve input file
+
+# generate the line for objective function that represents the total value
+fullString = ""
+for i in range(1, 101):
+  objective_func_value = math.floor(3 + 27 * np.cos(13 * i)**2)
+  fullString += "+" + str(objective_func_value) + "x_" + str(i)
+    
+#generate the line for objective function that represents the total value
+#print a full string for the objective function
+print("max: "+fullString+";")
+
+#generate the line for constraint function of weight that represents
+# the total weight should be less than 100 kg
+constraintString_weight=""
+for i in range(1, 101):
+    weight_function_value = math.floor(4 + 38 * np.cos(12 * i + 5)**2)
+    constraintString_weight += "+" + str(weight_function_value) + "x_" + str(i)
+print("weight_constraint=" + constraintString_weight +";")
+print("weight_constraint<=100;")
+
+#generate the line for constraint function of volume that represents
+# the total volume should be less than 100 L
+constraintString_volume=""
+for i in range(1, 101):
+    weight_function_value = math.floor(4 + 28 * np.cos(7 * i - 8)**2)
+    constraintString_volume += "+" + str(weight_function_value) + "x_" + str(i)
+print("volume_constraint=" + constraintString_volume +";")
+print("volume_constraint<=100;")
+    
+# declare all variables as binary
+binString = "bin "
+for i in range(1, 101):
+  binString += "x_" +str(i)
+  if i<100:
+    binString += ","
+print(binString+";")
