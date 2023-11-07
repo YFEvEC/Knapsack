@@ -1,0 +1,230 @@
+\documentclass[12pt]{article}
+ 
+\usepackage[margin=0.75in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{physics}
+\usepackage{mathdots}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage[T1]{fontenc}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage{MnSymbol,wasysym}
+\usepackage{hyperref}
+\usepackage{filecontents}
+\def\firstcircle{(90:4cm) circle (4.5cm)}
+\def\secondcircle{(200:3cm) circle (4.5cm)}
+\def\thirdcircle{(340:3cm) circle (4.5cm)}
+
+\newcommand{\N}{\mathbb{N}}
+% Bold for vectors and matrices
+\newcommand\vect[1]{\mathbf{#1}}
+\newcommand{\Z}{\mathbb{Z}}
+\renewcommand{\theenumi}{\alph{enumi}}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][\large Exercise]{\begin{trivlist}
+\item[\centering \Large \hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+ 
+\makeatletter
+\def\@seccntformat#1{%
+  \expandafter\ifx\csname c@#1\endcsname\c@section\else
+  \csname the#1\endcsname\quad
+  \fi}
+\makeatother
+
+\setcounter{MaxMatrixCols}{20} 
+
+
+
+\usepackage{xcolor}
+\colorlet{kw}{blue}
+\definecolor{com}{rgb}{0,0.6,0.3}
+
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+% redefine keywords
+\algrenewcommand\algorithmicfunction{\textcolor{kw}{function}}
+\algrenewcommand\algorithmicwhile{\textcolor{kw}{while}}
+\algrenewcommand\algorithmicfor{\textcolor{kw}{for}}
+\algrenewcommand\algorithmicif{\textcolor{kw}{if}}
+\algrenewcommand\algorithmicelse{\textcolor{kw}{else}}
+\algrenewcommand\algorithmicend{\textcolor{kw}{end}}
+
+% new keywords
+\algnewcommand\Break{\textcolor{kw}{break}}%
+\algnewcommand\Continue{\textcolor{kw}{continue}}%
+
+% redefine loops
+\algdef{SE}[WHILE]{While}{EndWhile}[1]{\algorithmicwhile\ #1}{\algorithmicend}%
+\algdef{SE}[FOR]{For}{EndFor}[1]{\algorithmicfor\ #1}{\algorithmicend}%
+\algdef{SE}[IF]{IF}{EndFor}[1]{\algorithmicif\ #1 }{\algorithmicend}%
+
+% redefine comments
+\algrenewcommand{\algorithmiccomment}[1]{{\color{com}\%#1}}
+
+
+\begin{document}
+
+\title{\textbf{Knapsack.}}%replace X with the appropriate number
+\author{Eve Chen} %if necessary, replace with your course title
+\date{\normalsize 6th Apirl}
+\maketitle
+\noindent \underline{\textbf{Knapsack Problem}}: \\\\ The knapsack problem is a problem in combinatorial optimization: Given a set of items, each with a weight and a value, determine which items to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible.\\\\
+To set up the problem, I have 100 unique objects with different values, weights and volumes. Let $x_i$ be a variable to indicate whether or not objects i is in the container, then each object i $(1 \leq i \leq 100)$ has different value(dollars), weight(kg) and volume(L):\\\\
+Let $val_i$ be the value of the $i^{th}$ object:
+$val_i$ = $floor(3+27 cos^2( 13i ))$ dollars\\
+Let $w_i$ be the weight of the $i^{th}$ object:
+$w_i$ = $floor(4+38 cos^2( 12i+5 ))$ kg\\
+Let $vol_i$ be the volume of the $i^{th}$ object:
+$vol_i$ =$floor(4+28 cos^2( 7i-8))$ L\\\\
+At the same time, I have a container: \\
+container's maximum capacity in weight = 100 kg \\
+container's maximum capacity in volume = 100 L\\\\
+To solve this problem, I will use LP. Then $x_i$ is the variable that indicate whether or not objects i is in the container:\\
+\begin{cases}  
+$x_i$= 0, which means that object i should not be put into the container\\ 
+$x_i$ = 1, which means that object i should be put into container
+\end{cases}\\
+
+The floor function make a real value x to the largest integer less than or equal to x. here would be an example of this function: floor(3.2)=3. \\\\
+
+\noindent{\textbf{Part A}}:
+To decide what objects should be put into the container to maximize the total value, I am going to maximize the total value of objects, the objective function would be $$ \sum_{i=1}^{100} {val_i \cdot x_i} $$\\
+To check constraints that bind our function, I need to focus on the container that has limited weight and volume:\\
+   $$ \sum_{i=1}^{100} {w_i \cdot x_i} \leq 100  $$
+   $$ \sum_{i=1}^{100} {vol_i \cdot x_i} \leq 100 $$\\
+At the same time, $x_i$ = 0 or 1, when $1 \leq i \leq 100.$ \\\\ 
+Finally, the LP of this problem would be as following:\\
+$$max \sum_{i=1}^{100} {val_i \cdot x_i} $$
+$$\emph{subject to}  \sum_{i=1}^{100} {w_i \cdot x_i} \leq 100 $$
+$$\sum_{i=1}^{100} {vol_i \cdot x_i} \leq 100 $$
+$$x_i \in (0, 1),  1 \leq i \leq 100$$
+Then I will generate a lpsolve input file with python code and the following is the python code that I use to generate the txt file:
+\begin{verbatim}
+import numpy as np
+import math
+
+##### generate lpsolve input file
+
+# generate the line for objective function that represents the total value
+fullString = ""
+for i in range(1, 101):
+  objective_func_value = math.floor(3 + 27 * np.cos(13 * i)**2)
+  fullString += "+" + str(objective_func_value) + "x_" + str(i)
+    
+#generate the line for objective function that represents the total value
+#print a full string for the objective function
+print("max: "+fullString+";")
+
+#generate the line for constraint function of weight that represents
+# the total weight should be less than 100 kg
+constraintString_weight=""
+for i in range(1, 101):
+    weight_function_value = math.floor(4 + 38 * np.cos(12 * i + 5)**2)
+    constraintString_weight += "+" + str(weight_function_value) + "x_" + str(i)
+print("weight_constraint=" + constraintString_weight +";")
+print("weight_constraint<=100;")
+
+#generate the line for constraint function of volume that represents
+# the total volume should be less than 100 L
+constraintString_volume=""
+for i in range(1, 101):
+    weight_function_value = math.floor(4 + 28 * np.cos(7 * i - 8)**2)
+    constraintString_volume += "+" + str(weight_function_value) + "x_" + str(i)
+print("volume_constraint=" + constraintString_volume +";")
+print("volume_constraint<=100;")
+    
+# declare all variables as binary
+binString = "bin "
+for i in range(1, 101):
+  binString += "x_" +str(i)
+  if i<100:
+    binString += ","
+print(binString+";")
+\end{verbatim}
+\\
+By running the python code for the objective function and constraint function, I generate a lp solve input file as following:\\
+\begin{verbatim}
+max: +25x_1+14x_2+...+3x_98+9x_99+20x_100;
+weight_constraint=+6x_1+25x_2+41x_3+36x_4+...+38x_97+39x_98+22x_99+5x_100;
+weight_constraint<=100;
+volume_constraint=+12x_1+29x_2+27x_3+...+31x_99+16x_100;
+volume_constraint<=100;
+bin x_1,x_2,x_3...x_98,x_99,x_100;
+\end{verbatim}
+By running this lp solve input file, I got a result:\\
+\begin{verbatim}
+Value of objective function: 245.00000000
+
+Actual values of the variables:
+x_1                             1
+x_22                            1
+x_35                            1
+x_44                            1
+x_45                            1
+x_57                            1
+x_66                            1
+x_78                            1
+x_79                            1
+x_95                            1
+weight_constraint             100
+volume_constraint              96
+\end{verbatim}
+By observation, the constraint weight is the same as the total weight I got, which is 100 kg, thus the constraint weight is binding. In contrast, the constraint volume is 100 L, when I get a result as 96 L, thus the constrain volume is not binding. By the result of the lp solve input file, I can conclude that the object 1, 22,  35, 44, 45, 57, 66, 78, 79, 95 are required to be put into the container to maximum our value, when the maximum value I get is 245 dollars.\\\\\\
+\noindent{\textbf{Part B}}:
+ Since cos function generate a number that $0 \leq cos^2 \leq 1$, the lowest possible weight would be 4 + 0 = 4 kg, when the lowest possible volume would be 4 + 0 = 4 L. I could not compute every single object's weight and volume mandatory, thus I assume that each object has the lowest volume and lowest weight. Under the constraint, $25\cdot4$ = 100 kg and $25\cdot4$ = 100 L, when 100 kg is reaching the limited weight, thus the maximum number of objects that could be put in the container is 25. However, since not every object will have the weight as 4 kg and volume as 4 L, I would not be able to put all of the objects under the lower bound for object's number before it reaches 25.\\\\
+Now I try to put a lower bound on the number of objects starts from 0 to 25 that are put into the container, recording the different solutions which are generated by different lower bound.Besides, I also want to know the number of items in container, thus the total number of items will be the sum of $x_i$ as I introduced in the introduction:\\
+ $$\emph {total number} = \sum_{i=1}^{100} {x_i}$$
+Setting up a lower bound for object's number, I introduce a new variable $b$, then $b$ is the lower bound and it satisfied the condition:\\
+ $$\sum_{i=1}^{100} {x_i} \geq b$$ 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=150mm,scale=0.5]{knapsack1.png}
+\caption{the objects that are put under different lower bound condition to maximize the value}
+\label{fig:chart}
+\end{figure}\\\\
+\begin{text}\\
+By observing the chart, the total value stay the same as the lower bound is smaller or equal to 10. Before using the lower bound on the number of objects, the LP generate an optimal number as 10 objects and 245 dollars as the best solution, thus when lower bound is smaller than 10, the result would not change as the lower bound of object's number is changed. As the lower bound goes from 10 to 14, the total value of objects starts to decrease. However, I could see that when the lower bound is greater than 14, the result is unable to be calculated as infeasible, thus I conclude that I have considered all possible lower bound.\\\\
+
+Furthermore, I noticed that some objects keep existing on the list no matter what lower bound for object's number I changed, thus it would be interesting in discussing the weight and volume of those specific objects. By checking for several times, object 1, 22, 44, 45, 79 keep existing in every solution.\\
+\begin{figure}[h!]
+\centering
+\includegraphics[width=150mm,scale=0.5]{knapsack4.png}
+\caption{the objects that are put under different lower bound condition to maximize the value}
+\label{fig:chart}
+\end{figure}\\
+Then I discovered that the object that keep existing always have a great value with a small volume or light weight, which makes them as good choices to be put into the container to optimize the value with limiting capacity.\\\\
+\noindent{\textbf{Part C}}: \\\\
+Choosing different knapsacks with different capacity when the weight bound and volume bound is staying the same, I try to record how the total value of knapsack is going to change depends on different knapsack. By choosing random number on the weight and value bound and comparing the different in the outcome of value, I have the following data and plot(see in the last pages).\\\\
+ \begin{figure}[h!]
+\centering
+\includegraphics[width=120mm,scale=0.5]{knapsack2.png}
+\caption{the different value I gained by adjusting the number in weight/volume bound}
+\label{fig:chart}
+\end{figure}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=150mm,scale=0.5]{knapsack3.png}
+\caption{the plot represent the changing trends by adjusting weight/volume bound}
+\label{fig:chart}
+\end{figure}
+\begin{text}
+As the object is put into the container, the smallest object that I put in the first time (as the first item to be put) would have a small weight/volume as 6, thus the first data starts at constraint equal to 6 and the total value is 3. 
+From the trend, I could see that the total value of objects is increasing when I increases the weight/volume constraint. As it carried all 100 objects in our container and use the given function to calculate the total value of 100 objects, the total value will reach the maximum point as 1578 dollars when the number of constraint of weight and volume is 2244. Even if I keep adding the bound, I have already put all objects into the container, thus the total value would not change and stay at 1578 dollars.\\
+\end{text}
+\end{document}
+
